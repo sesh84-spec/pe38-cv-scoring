@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CV Scoring App (Flask)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; max-width: 1100px; }
+    textarea { width: 100%; min-height: 170px; padding: 10px; }
+    .btn { padding: 10px 16px; cursor: pointer; }
+    .error { color: #b00020; margin: 12px 0; }
+    pre { white-space: pre-wrap; background: #f6f6f6; padding: 12px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    .muted { color: #555; font-size: 14px; }
+    .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>CV Scoring App</h1>
+
+  <form method="post" class="grid">
+    <div class="card">
+      <div><b>Режим ввода</b></div>
+      <div class="muted">Auto: если оба поля похожи на ссылки, парсим HH. Иначе считаем как текст.</div>
+      <label><input type="radio" name="mode" value="auto" {% if mode=='auto' %}checked{% endif %}> Auto</label>
+      <label style="margin-left:12px;"><input type="radio" name="mode" value="text" {% if mode=='text' %}checked{% endif %}> Текст</label>
+      <label style="margin-left:12px;"><input type="radio" name="mode" value="url" {% if mode=='url' %}checked{% endif %}> Ссылки (HH)</label>
+    </div>
+
+    <div>
+      <label><b>Вакансия (текст или ссылка)</b></label><br/>
+      <textarea name="job_input" placeholder="Вставь текст вакансии или ссылку HH...">{{ job_input }}</textarea>
+    </div>
+
+    <div>
+      <label><b>Резюме (текст или ссылка)</b></label><br/>
+      <textarea name="cv_input" placeholder="Вставь текст резюме или ссылку HH...">{{ cv_input }}</textarea>
+    </div>
+
+    <div>
+      <button class="btn" type="submit">Оценить</button>
+    </div>
+  </form>
+
+  {% if error %}
+    <div class="error"><b>{{ error }}</b></div>
+  {% endif %}
+
+  {% if result %}
+    <h2>Результат</h2>
+    <pre>{{ result }}</pre>
+  {% endif %}
+
+  {% if parsed_job or parsed_cv %}
+    <h2>Распарсенный текст (для проверки)</h2>
+    {% if parsed_job %}
+      <h3>Вакансия</h3>
+      <pre>{{ parsed_job }}</pre>
+    {% endif %}
+    {% if parsed_cv %}
+      <h3>Резюме</h3>
+      <pre>{{ parsed_cv }}</pre>
+    {% endif %}
+  {% endif %}
+</body>
+</html>
